@@ -1,7 +1,7 @@
 package com.yuiwai.gdxs
 
 import com.badlogic.gdx.graphics.g2d.{GlyphLayout, SpriteBatch}
-import com.yuiwai.gdxs.component.Label
+import com.yuiwai.gdxs.component.{Button, Label}
 
 package object renderer {
   implicit val labelRenderer: Renderer[Label] = new Renderer[Label] {
@@ -18,6 +18,12 @@ package object renderer {
         batch, label.text,
         pos.x + (size.width - layout.width) / 2,
         pos.y + layout.height + (size.height - layout.height) / 2)
+    }
+  }
+  implicit def buttonRenderer[A]: Renderer[Button[A]] = new Renderer[Button[A]] {
+    override def render(button: Button[A])(implicit batch: SpriteBatch): Unit = {
+      // background
+      Renderer.renderBackground(button.region, button.style)
     }
   }
 }
