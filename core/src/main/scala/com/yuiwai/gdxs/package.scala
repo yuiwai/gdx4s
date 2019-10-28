@@ -7,6 +7,7 @@ package object gdxs {
     def toVector3: Vector3 = new Vector3(x, y, 0)
   }
   object Pos {
+    def zero: Pos = apply(0, 0)
     def apply(vector3: Vector3): Pos = apply(vector3.x, vector3.y)
   }
   final case class Size(width: Float, height: Float)
@@ -28,4 +29,7 @@ package object gdxs {
     def height: Float = area.size.height
   }
   final case class FixedRegion(area: Area) extends Region
+  final case class RelativeRegion(pos: Pos) extends Region {
+    override val area: Area = Area(pos, Size(0, 0))
+  }
 }

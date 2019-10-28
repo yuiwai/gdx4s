@@ -1,7 +1,8 @@
 package com.yuiwai.gdxs
 
 import com.badlogic.gdx.graphics.Texture
-import com.yuiwai.gdxs.style.{BackgroundStyle, FitTextureBackgroundStyle, FontStyle, Style}
+import com.yuiwai.gdxs.drawing.Drawing
+import com.yuiwai.gdxs.style.{BackgroundStyle, FitTextureBackgroundStyle, FontStyle, NoStyle, Style}
 
 package object component {
   sealed trait Component {
@@ -50,6 +51,22 @@ package object component {
         override val style: LabelStyle = labelStyle
         override val region: Region = buttonRegion
       }
+  }
+
+  // Arrow
+  trait Arrow extends Component {
+  }
+
+  // Canvas
+  trait Canvas extends Component {
+    val drawings: Seq[Drawing]
+  }
+  object Canvas {
+    def apply(canvasDrawings: Seq[Drawing]): Canvas = new Canvas {
+      override val drawings: Seq[Drawing] = canvasDrawings
+      override val style: Style = NoStyle
+      override val region: Region = RelativeRegion(Pos.zero)
+    }
   }
 
   // Container

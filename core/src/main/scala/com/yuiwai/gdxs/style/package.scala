@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 
 package object style {
   sealed trait Style
+  case object NoStyle extends Style
 
   // background
   sealed trait BackgroundStyle extends Style
