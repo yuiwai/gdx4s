@@ -1,8 +1,9 @@
 package com.yuiwai.gdxs
 
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.yuiwai.gdxs.drawing.Drawing
-import com.yuiwai.gdxs.style.{BackgroundStyle, FitTextureBackgroundStyle, FontStyle, NoStyle, Style}
+import com.yuiwai.gdxs.style._
 
 package object component {
   sealed trait Component {
@@ -51,6 +52,24 @@ package object component {
         override val style: LabelStyle = labelStyle
         override val region: Region = buttonRegion
       }
+  }
+
+  // Clip
+  trait Clip extends Component {
+    val originPos: Pos
+    val sprite: Sprite
+  }
+  object Clip {
+    def apply(clipOriginPos: Pos, clipSprite: Sprite): Clip = new Clip {
+      override val originPos: Pos = clipOriginPos
+      override val sprite: Sprite = clipSprite
+      override val style: Style = NoStyle
+      override val region: Region = sprite.region
+    }
+  }
+  // TODO 置き場を考える
+  implicit class SpriteWrap(sprite: Sprite) {
+    def region: Region = FixedRegion(Area(Pos(sprite.getX, sprite.getY), Size(sprite.getWidth, sprite.getHeight)))
   }
 
   // Arrow
