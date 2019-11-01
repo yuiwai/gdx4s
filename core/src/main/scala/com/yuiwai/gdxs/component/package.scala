@@ -56,12 +56,12 @@ package object component {
 
   // Clip
   trait Clip extends Component {
-    val originPos: Pos
+    val pos: Pos
     val sprite: Sprite
   }
   object Clip {
-    def apply(clipOriginPos: Pos, clipSprite: Sprite): Clip = new Clip {
-      override val originPos: Pos = clipOriginPos
+    def apply(clipPos: Pos, clipSprite: Sprite): Clip = new Clip {
+      override val pos: Pos = clipPos
       override val sprite: Sprite = clipSprite
       override val style: Style = NoStyle
       override val region: Region = sprite.region
