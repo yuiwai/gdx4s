@@ -1,7 +1,7 @@
 package com.yuiwai.gdxs
 
 import com.badlogic.gdx.graphics.g2d.{GlyphLayout, SpriteBatch}
-import com.yuiwai.gdxs.component.{Button, Clip, Label}
+import com.yuiwai.gdxs.component.{Button, Clip, Label, Tiled}
 
 package object renderer {
   implicit val labelRenderer: Renderer[Label] = new Renderer[Label] {
@@ -26,7 +26,23 @@ package object renderer {
       Renderer.renderBackground(button.region, button.style)
     }
   }
-  implicit val clipRenderer = new Renderer[Clip] {
+  implicit val tiledRenderer: Renderer[Tiled] = new Renderer[Tiled] {
+    override def render(tiled: Tiled)(implicit batch: SpriteBatch): Unit = {
+      tiled.fillPositions.zipWithIndex.foreach {
+        case (bool, index) if bool =>
+          val y = index / tiled.fillWidth
+          val x = index % tiled.fillWidth
+          batch.draw(
+            tiled.tileTexture,
+            tiled.region.x + tiled.tileSize.width * x,
+            tiled.region.y + tiled.tileSize.height * y,
+            tiled.tileSize.width,
+            tiled.tileSize.height
+          )
+      }
+    }
+  }
+  implicit val clipRenderer: Renderer[Clip] = new Renderer[Clip] {
     override def render(clip: Clip)(implicit batch: SpriteBatch): Unit = {
       clip.sprite.setPosition(clip.pos.x, clip.pos.y)
       clip.sprite.draw(batch)
