@@ -72,6 +72,31 @@ package object component {
     def region: Region = FixedRegion(Area(Pos(sprite.getX, sprite.getY), Size(sprite.getWidth, sprite.getHeight)))
   }
 
+  // Tiled
+  trait Tiled extends Component {
+    val tileTexture: Texture
+    val tileSize: Size
+    val fillWidth: Int
+    val fillPositions: Seq[Boolean]
+  }
+  object Tiled {
+    def apply(
+      fillPos: Pos,
+      fillTileSize: Size,
+      fillTileTexture: Texture,
+      tiledFillWidth: Int,
+      tiledFillPositions: Seq[Boolean]): Tiled = new Tiled {
+      override val tileTexture: Texture = fillTileTexture
+      override val tileSize: Size = fillTileSize
+      override val fillWidth: Int = tiledFillWidth
+      override val fillPositions: Seq[Boolean] = tiledFillPositions
+      override val style: Style = NoStyle
+      override val region: Region =
+        FixedRegion(Area(fillPos,
+          Size(fillWidth * tileSize.width, tiledFillPositions.size / fillWidth * tileSize.height)))
+    }
+  }
+
   // Arrow
   trait Arrow extends Component {
   }
