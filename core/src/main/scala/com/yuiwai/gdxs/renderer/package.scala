@@ -42,7 +42,7 @@ package object renderer {
       }
     }
   }
-  implicit val clipRenderer = new Renderer[Clip] {
+  implicit val clipRenderer: Renderer[Clip] = new Renderer[Clip] {
     override def render(clip: Clip)(implicit batch: SpriteBatch): Unit = {
       clip.sprite.setPosition(clip.pos.x, clip.pos.y)
       clip.sprite.draw(batch)
