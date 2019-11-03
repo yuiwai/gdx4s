@@ -13,6 +13,7 @@ package object style {
   trait FitTextureBackgroundStyle extends BackgroundStyle {
     val backgroundTexture: Texture
   }
+  trait NoBackgroundStyle extends BackgroundStyle
 
   // font
   sealed trait FontStyle extends Style {

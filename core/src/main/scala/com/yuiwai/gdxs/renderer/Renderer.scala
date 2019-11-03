@@ -3,7 +3,7 @@ package com.yuiwai.gdxs.renderer
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.yuiwai.gdxs.Region
 import com.yuiwai.gdxs.component.Component
-import com.yuiwai.gdxs.style.{BackgroundStyle, FitTextureBackgroundStyle}
+import com.yuiwai.gdxs.style.{BackgroundStyle, FitTextureBackgroundStyle, NoBackgroundStyle}
 
 trait Renderer[C <: Component] {
   def render(component: C)(implicit batch: SpriteBatch): Unit
@@ -15,5 +15,6 @@ object Renderer {
   def renderBackground(region: Region, style: BackgroundStyle)(implicit batch: SpriteBatch): Unit = style match {
     case s: FitTextureBackgroundStyle =>
       batch.draw(s.backgroundTexture, region.x, region.y, region.width, region.height)
+    case _: NoBackgroundStyle =>
   }
 }
