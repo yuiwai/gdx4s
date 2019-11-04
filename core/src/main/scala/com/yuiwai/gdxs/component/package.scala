@@ -3,6 +3,7 @@ package com.yuiwai.gdxs
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.yuiwai.gdxs.drawing.Drawing
+import com.yuiwai.gdxs.event.EventHandler
 import com.yuiwai.gdxs.style._
 
 package object component {
@@ -121,4 +122,10 @@ package object component {
   final case class AbsoluteContainer(children: Seq[Component], mapping: Map[Component, Vector2]) extends Container
   final case class VerticalContainer(children: Seq[Component]) extends Container
   */
+
+  // Layer
+  sealed trait Layer extends Container {
+    // TODO イベントを横取りするために独自のEventHandlerを差し込む
+    val eventHandlerStack: List[EventHandler[_]]
+  }
 }
