@@ -128,4 +128,7 @@ package object component {
     // TODO イベントを横取りするために独自のEventHandlerを差し込む
     val eventHandlerStack: List[EventHandler[_]]
   }
+  object Layer {
+    def apply(): Layer = ???
+  }
 }
