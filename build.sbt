@@ -16,3 +16,15 @@ lazy val core = project
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"
     )
   )
+
+lazy val example = project
+  .in(file("example"))
+  .settings(
+    name := "gdxs-exampl",
+    libraryDependencies ++= Seq(
+      "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % gdxVersion,
+      "com.badlogicgames.gdx" % "gdx-platform" % gdxVersion classifier "natives-desktop",
+      "com.badlogicgames.gdx" % "gdx-freetype-platform" % gdxVersion classifier "natives-desktop"
+    )
+  )
+  .dependsOn(core)
