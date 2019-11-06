@@ -1,5 +1,6 @@
 package com.yuiwai.gdxs
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.yuiwai.gdxs.drawing.Drawing
@@ -130,5 +131,22 @@ package object component {
   }
   object Layer {
     def apply(): Layer = ???
+  }
+
+  sealed trait Dialog extends Layer {
+    def onShow(): Unit = {
+      Gdx.input.setInputProcessor(???)
+    }
+    def onDestroy(): Unit = ???
+  }
+  object Dialog {
+    final case class DialogResult()
+    // TODO 現在のイベントハンドラのスタックも受け取るように
+    def alert[A](currentEventHandler: EventHandler[A], okAction: A, cancelAction: A): Dialog = new Dialog {
+      override val eventHandlerStack: List[EventHandler[A]] = Nil // TODO 前の状態に戻すためスタックに積む
+      override val children: Seq[Component] = Nil // TODO 文言、OK, Cancel
+      override val style: Style = NoStyle // TODO DialogStyleを作る
+      override val region: Region = FullRegion // TODO 基底に持っていけるかも
+    }
   }
 }

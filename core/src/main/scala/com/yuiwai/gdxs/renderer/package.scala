@@ -1,7 +1,7 @@
 package com.yuiwai.gdxs
 
 import com.badlogic.gdx.graphics.g2d.{GlyphLayout, SpriteBatch}
-import com.yuiwai.gdxs.component.{Button, Clip, Label, Tiled}
+import com.yuiwai.gdxs.component.{Button, Clip, Dialog, Label, Tiled}
 
 package object renderer {
   implicit val labelRenderer: Renderer[Label] = new Renderer[Label] {
@@ -47,5 +47,9 @@ package object renderer {
       clip.sprite.setPosition(clip.pos.x, clip.pos.y)
       clip.sprite.draw(batch)
     }
+  }
+
+  implicit val dialogRenderer: Renderer[Dialog] = new Renderer[Dialog] {
+    override def render(component: Dialog)(implicit batch: SpriteBatch): Unit = ???
   }
 }

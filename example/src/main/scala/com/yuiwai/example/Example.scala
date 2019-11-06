@@ -33,11 +33,14 @@ class Adapter() extends ApplicationListener { self =>
       Button(texture, new FixedRegion(Area(Pos(0, 0), Size(50, 50))), ButtonAction)::Nil
   }
   private lazy implicit val batch = new SpriteBatch()
+  def actionHandler(action: Action): Unit = action match {
+    case ButtonAction =>
+  }
   override def create(): Unit = {
     pixmap.setColor(Color.BLUE)
     pixmap.fillCircle(50, 50, 40)
     Gdx.input.setInputProcessor(new EventHandler[Action] {
-      override protected val actionHandler: Action => Unit = println
+      override protected val actionHandler: Action => Unit = self.actionHandler
       override protected val viewProfile: ViewProfile = self.viewProfile
     })
   }
