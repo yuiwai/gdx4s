@@ -25,9 +25,18 @@ class EventHandlerSpec extends WordSpec with Matchers {
     }
 
     "handle button event with CompositeViewProfile" in new Fixture {
+      when(camera.unproject(new Vector3(100, 100, 0))).thenReturn(new Vector3(100, 100, 0))
+      when(camera.unproject(new Vector3(130, 130, 0))).thenReturn(new Vector3(130, 130, 0))
+
       val handler = genHandler(
-        CompositeViewProfile(genViewProfile(), genViewProfile())
+        CompositeViewProfile(
+          genViewProfile(Button(texture, FixedRegion(Area(Pos(100, 100), Size(20, 20))), SetFlag(true)) :: Nil),
+          genViewProfile(Button(texture, FixedRegion(Area(Pos(130, 130), Size(20, 20))), SetFlag(false)):: Nil))
       )
+      handler.touchDown(100, 100, 0, 0)
+      flag shouldBe true
+      handler.touchDown(130, 130, 0, 0)
+      flag shouldBe false
     }
 
     "handle button event with StackedViewProfile" in {
