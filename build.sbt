@@ -13,7 +13,8 @@ lazy val core = project
     libraryDependencies ++= Seq(
       "com.badlogicgames.gdx" % "gdx" % gdxVersion,
       "org.scalactic" %% "scalactic" % "3.0.8",
-      "org.scalatest" %% "scalatest" % "3.0.8" % "test"
+      "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+      "org.mockito" %% "mockito-scala" % "1.7.1" % "test"
     )
   )
 

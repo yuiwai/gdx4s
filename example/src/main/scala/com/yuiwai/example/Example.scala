@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Camera, Color, GL20, OrthographicCamera, Pixmap, Texture}
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yuiwai.gdxs.{Area, FixedRegion, Pos, Size, component}
-import com.yuiwai.gdxs.component.Button
+import com.yuiwai.gdxs.component.{Button, Dialog}
 import com.yuiwai.gdxs.event.EventHandler
 import com.yuiwai.gdxs.renderer.Renderer
 import com.yuiwai.gdxs.view.ViewProfile
@@ -20,9 +20,10 @@ object Example {
 }
 
 sealed trait Action
-case object ButtonAction extends Action
+case object ShowDialog extends Action
 
-class Adapter() extends ApplicationListener { self =>
+class Adapter() extends ApplicationListener {
+  self =>
   private lazy val camera = new OrthographicCamera()
   private lazy val viewport = new FitViewport(600, 300, camera)
   private lazy val pixmap = new Pixmap(100, 100, Pixmap.Format.RGBA8888)
@@ -30,11 +31,11 @@ class Adapter() extends ApplicationListener { self =>
   private lazy val viewProfile = new ViewProfile {
     override val camera: Camera = self.camera
     override val components: Seq[component.Component] =
-      Button(texture, new FixedRegion(Area(Pos(0, 0), Size(50, 50))), ButtonAction)::Nil
+      Button(texture, new FixedRegion(Area(Pos(0, 0), Size(50, 50))), ShowDialog) :: Nil
   }
   private lazy implicit val batch = new SpriteBatch()
   def actionHandler(action: Action): Unit = action match {
-    case ButtonAction =>
+    case ShowDialog => Dialog.alert()
   }
   override def create(): Unit = {
     pixmap.setColor(Color.BLUE)
