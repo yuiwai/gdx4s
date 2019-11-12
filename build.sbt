@@ -21,7 +21,7 @@ lazy val core = project
 lazy val example = project
   .in(file("example"))
   .settings(
-    name := "gdxs-exampl",
+    name := "gdxs-example",
     libraryDependencies ++= Seq(
       "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % gdxVersion,
       "com.badlogicgames.gdx" % "gdx-platform" % gdxVersion classifier "natives-desktop",

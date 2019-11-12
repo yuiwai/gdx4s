@@ -3,7 +3,7 @@ package com.yuiwai.gdxs.event
 import com.badlogic.gdx.graphics.{Camera, Texture}
 import com.badlogic.gdx.math.Vector3
 import com.yuiwai.gdxs.component.{Button, Component}
-import com.yuiwai.gdxs.view.{CompositeViewProfile, ViewProfile}
+import com.yuiwai.gdxs.view.{CompositeViewProfile, StackedViewProfile, ViewProfile}
 import com.yuiwai.gdxs.{Area, FixedRegion, Pos, Size}
 import org.mockito.MockitoSugar._
 import org.scalatest.{Matchers, WordSpec}
@@ -31,15 +31,31 @@ class EventHandlerSpec extends WordSpec with Matchers {
       val handler = genHandler(
         CompositeViewProfile(
           genViewProfile(Button(texture, FixedRegion(Area(Pos(100, 100), Size(20, 20))), SetFlag(true)) :: Nil),
-          genViewProfile(Button(texture, FixedRegion(Area(Pos(130, 130), Size(20, 20))), SetFlag(false)):: Nil))
+          genViewProfile(Button(texture, FixedRegion(Area(Pos(130, 130), Size(20, 20))), SetFlag(false)) :: Nil))
       )
+      flag shouldBe false
       handler.touchDown(100, 100, 0, 0)
       flag shouldBe true
       handler.touchDown(130, 130, 0, 0)
       flag shouldBe false
     }
 
-    "handle button event with StackedViewProfile" in {
+    "handle button event with StackedViewProfile" in new Fixture {
+      when(camera.unproject(new Vector3(100, 100, 0))).thenReturn(new Vector3(100, 100, 0))
+      when(camera.unproject(new Vector3(130, 130, 0))).thenReturn(new Vector3(130, 130, 0))
+
+      val viewProfile = StackedViewProfile(
+        genViewProfile(Button(texture, FixedRegion(Area(Pos(100, 100), Size(20, 20))), SetFlag(true)) :: Nil),
+        genViewProfile(Button(texture, FixedRegion(Area(Pos(130, 130), Size(20, 20))), SetFlag(false)) :: Nil) :: Nil)
+      val handler = genHandler(viewProfile)
+      flag shouldBe false
+      handler.touchDown(100, 100, 0, 0)
+      flag shouldBe true
+      handler.touchDown(130, 130, 0, 0)
+      flag shouldBe true
+
+      genHandler(viewProfile.pop.get).touchDown(130, 130, 0, 0)
+      flag shouldBe false
     }
   }
 }
