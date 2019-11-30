@@ -1,4 +1,4 @@
-version in ThisBuild := "0.1.0"
+version in ThisBuild := "0.2.0-SNAPSHOT"
 scalaVersion in ThisBuild := "2.13.1"
 organization in ThisBuild := "com.yuiwai"
 scalacOptions in ThisBuild ++= Seq(
@@ -14,7 +14,7 @@ lazy val root = project
   .in(file("."))
   .aggregate(core)
   .settings(
-    name := "yachiyo",
+    name := "gdxs",
     publish / skip := true
   )
 
