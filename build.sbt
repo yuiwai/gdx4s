@@ -31,3 +31,14 @@ lazy val core = project
     publishTo := Some(Resolver.file("file", file("release")))
   )
 
+lazy val example = project
+  .in(file("example"))
+  .settings(
+    name := "gdxs-example",
+    libraryDependencies ++= Seq(
+      "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % gdxVersion,
+      "com.badlogicgames.gdx" % "gdx-platform" % gdxVersion classifier "natives-desktop",
+      "com.badlogicgames.gdx" % "gdx-freetype-platform" % gdxVersion classifier "natives-desktop"
+    )
+  )
+  .dependsOn(core)

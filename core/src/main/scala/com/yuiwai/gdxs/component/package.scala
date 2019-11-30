@@ -121,4 +121,14 @@ package object component {
   final case class AbsoluteContainer(children: Seq[Component], mapping: Map[Component, Vector2]) extends Container
   final case class VerticalContainer(children: Seq[Component]) extends Container
   */
+
+  sealed trait Table extends Component {
+    val rows: Seq[Row]
+  }
+  sealed trait Row extends Component {
+    val columns: Seq[Column]
+  }
+  sealed trait Column extends Component {
+    val child: Component
+  }
 }
