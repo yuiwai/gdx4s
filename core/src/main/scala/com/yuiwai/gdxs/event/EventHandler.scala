@@ -1,7 +1,7 @@
 package com.yuiwai.gdxs.event
 
 import com.badlogic.gdx.InputProcessor
-import com.yuiwai.gdxs.Pos
+import com.yuiwai.gdxs.{Pos, Region}
 import com.yuiwai.gdxs.component.Button
 import com.yuiwai.gdxs.view.ViewProfile
 
@@ -13,16 +13,18 @@ trait EventHandler[A] extends InputProcessor {
       .camera
       .unproject(pos.toVector3)
   }
-  lazy val buttons: Seq[Button[A]] = viewProfile.components.collect {
-    case button: Button[A] => button
-  }
+  lazy val buttons: Seq[(Button[A], Region)] =
+    viewProfile.components.filter {
+      _.cell.isInstanceOf[Button[A]]
+    }
+      .map { c => c.cell.asInstanceOf[Button[A]] -> c.region }
 
   // FIXME 暫定ボタン実装
   override def touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
     val pos = screenToLocal(Pos(screenX, screenY))
-    buttons.find(_.area.hitTest(pos)) match {
-      case Some(button) =>
-        actionHandler(button.action)
+    buttons.find(_._2.area.hitTest(pos)) match {
+      case Some(c) =>
+        actionHandler(c._1.action)
         true
       case None => false
     }

@@ -11,6 +11,9 @@ package object gdxs {
     def apply(vector3: Vector3): Pos = apply(vector3.x, vector3.y)
   }
   final case class Size(width: Float, height: Float)
+  object Size {
+    def zero: Size = apply(0, 0)
+  }
   final case class Area(pos: Pos, size: Size) {
     def left: Float = pos.x
     def top: Float = pos.y
@@ -19,6 +22,9 @@ package object gdxs {
     def height: Float = size.height
     def hitTest(p: Pos): Boolean =
       p.x >= pos.x && p.x <= pos.x + size.width && p.y >= pos.y && p.y <= pos.y + size.height
+  }
+  object Area {
+    def zero: Area = apply(Pos.zero, Size.zero)
   }
 
   sealed trait Region {
@@ -31,5 +37,8 @@ package object gdxs {
   final case class FixedRegion(area: Area) extends Region
   final case class RelativeRegion(pos: Pos) extends Region {
     override val area: Area = Area(pos, Size(0, 0))
+  }
+  object NoRegion extends Region {
+    override val area: Area = Area.zero
   }
 }
