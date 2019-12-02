@@ -35,8 +35,9 @@ class Adapter() extends ApplicationListener {
   private lazy val viewProfile = new ViewProfile {
     override val camera: Camera = self.camera
     override val components: Seq[component.Component] = Seq(
-      // Table(FixedRegion(Area(Pos(50, 50), Size(200, 200)))),
-        // .appendRow(Column(Label("test", fontStyle)), Column(Label("foo", fontStyle))),
+      Table(FixedRegion(Area(Pos(50, 50), Size(200, 200)))) {
+        _.appendRow(Column(Label("test", fontStyle)), Column(Label("foo", fontStyle)))
+      },
       Button(texture, FixedRegion(Area(Pos(0, 0), Size(50, 50))), ShowDialog)
     )
   }

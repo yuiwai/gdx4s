@@ -164,14 +164,14 @@ package object component {
     }
     def appendRow(row: Row): Table = modRows(_ :+ row)
     def appendRow(col: Column, cols: Column*): Table =
-      appendRow(Row(col +: cols).cell.asInstanceOf[Row])
+      appendRow(Row(col +: cols))
   }
   object Table {
-    def apply(tableRegion: Region): Component =
+    def apply(tableRegion: Region)(f: Table => Table = identity): Component =
       ComponentImpl(
-        new Table {
+        f(new Table {
           override val rows: Seq[Row] = Seq.empty
-        },
+        }),
         NoStyle, // FIXME style
         tableRegion)
   }
@@ -179,28 +179,20 @@ package object component {
     val columns: Seq[Column]
   }
   object Row {
-    def empty: Component = apply(Seq.empty)
-    def apply(cols: Seq[Column]): Component =
-      ComponentImpl(
-        new Row {
-          override val columns: Seq[Column] = cols
-        },
-        NoStyle, // FIXME style
-        NoRegion
-      )
+    def empty: Row = apply(Seq.empty)
+    def apply(cols: Seq[Column]): Row =
+      new Row {
+        override val columns: Seq[Column] = cols
+      }
   }
   sealed trait Column extends ComponentCell {
     val child: Component
   }
   object Column {
-    def empty: Component = apply(EmptyComponent)
-    def apply(component: Component): Component =
-      ComponentImpl(
-        new Column {
-          override val child: Component = component
-        },
-        NoStyle, // FIXME style
-        NoRegion
-      )
+    def empty: Column = apply(EmptyComponent)
+    def apply(component: Component): Column =
+      new Column {
+        override val child: Component = component
+      }
   }
 }
