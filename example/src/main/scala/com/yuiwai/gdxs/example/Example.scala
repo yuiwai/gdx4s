@@ -35,8 +35,9 @@ class Adapter() extends ApplicationListener {
   private lazy val viewProfile = new ViewProfile {
     override val camera: Camera = self.camera
     override val components: Seq[component.Component] = Seq(
-      Table(FixedRegion(Area(Pos(50, 50), Size(200, 200)))) {
-        _.appendRow(Column(Label("test", fontStyle)), Column(Label("foo", fontStyle)))
+      Table(FixedRegion(Area(Pos(0, 0), Size(200, 80)))) {
+        _.appendRow(Column(Label("test1", fontStyle)), Column(Label("foo", fontStyle)))
+          .appendRow(Column(Label("test2", fontStyle)), Column(Label("bar", fontStyle)))
       },
       Button(texture, FixedRegion(Area(Pos(0, 0), Size(50, 50))), ShowDialog)
     )
@@ -62,7 +63,6 @@ class Adapter() extends ApplicationListener {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     batch.begin()
     Renderer.render(viewProfile)
-    // batch.draw(texture, 0, 0, 100, 100)
     batch.end()
   }
   override def pause(): Unit = {}

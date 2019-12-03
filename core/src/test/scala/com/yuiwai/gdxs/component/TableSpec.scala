@@ -12,10 +12,16 @@ class TableSpec  extends FlatSpec with Matchers with MockitoSugar {
     val region = mock[Region]
     Table(region)(_.appendRow(mock[Row]))
       .cell.asInstanceOf[Table].rows.size shouldBe 1
+
+    Table(region)(_.appendRow(mock[Row]).appendRow(mock[Row]))
+      .cell.asInstanceOf[Table].rows.size shouldBe 2
   }
   it should "カラム指定で行を追加することができる" in {
     val region = mock[Region]
     Table(region)(_.appendRow(mock[Column]))
+      .cell.asInstanceOf[Table].rows.size shouldBe 1
+
+    Table(region)(_.appendRow(mock[Column], mock[Column]))
       .cell.asInstanceOf[Table].rows.size shouldBe 1
   }
 }

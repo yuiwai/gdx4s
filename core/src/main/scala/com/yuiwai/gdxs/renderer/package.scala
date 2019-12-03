@@ -56,15 +56,19 @@ package object renderer {
       val colHeight = region.height / numOfRows
       val colWidth = region.width / numOfCols
 
-      def renderRow(row: Row): Unit = {
-        row.columns.foreach(col => renderCol(col))
+      def renderRow(row: Row, r: FixedRegion): Unit = {
+        row.columns.zipWithIndex.foreach { case (col, index) =>
+          renderCol(col, FixedRegion(r.area.shiftX(index * colWidth)))
+        }
       }
 
-      def renderCol(col: Column): Unit = {
-        Renderer.render(Seq(col.child))
+      def renderCol(col: Column, r: FixedRegion): Unit = {
+        Renderer.render(Seq(col.child.modRegion(_ => r)))
       }
 
-      table.rows.foreach(row => renderRow(row))
+      table.rows.zipWithIndex.foreach { case (row, index) =>
+        renderRow(row, FixedRegion(region.area.shiftY(region.height - index * colHeight)))
+      }
     }
   }
 }
