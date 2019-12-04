@@ -1,4 +1,4 @@
-version in ThisBuild := "0.1.0"
+version in ThisBuild := "0.2.0"
 scalaVersion in ThisBuild := "2.13.1"
 organization in ThisBuild := "com.yuiwai"
 scalacOptions in ThisBuild ++= Seq(
@@ -14,7 +14,7 @@ lazy val root = project
   .in(file("."))
   .aggregate(core)
   .settings(
-    name := "yachiyo",
+    name := "gdxs",
     publish / skip := true
   )
 
@@ -26,8 +26,20 @@ lazy val core = project
     libraryDependencies ++= Seq(
       "com.badlogicgames.gdx" % "gdx" % gdxVersion,
       "org.scalactic" %% "scalactic" % "3.0.8",
-      "org.scalatest" %% "scalatest" % "3.0.8" % "test"
+      "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+      "org.mockito" %% "mockito-scala-scalatest" % "1.7.1" % "test"
     ),
     publishTo := Some(Resolver.file("file", file("release")))
   )
 
+lazy val example = project
+  .in(file("example"))
+  .settings(
+    name := "gdxs-example",
+    libraryDependencies ++= Seq(
+      "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % gdxVersion,
+      "com.badlogicgames.gdx" % "gdx-platform" % gdxVersion classifier "natives-desktop",
+      "com.badlogicgames.gdx" % "gdx-freetype-platform" % gdxVersion classifier "natives-desktop"
+    )
+  )
+  .dependsOn(core)
