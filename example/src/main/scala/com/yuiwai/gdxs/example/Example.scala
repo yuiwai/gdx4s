@@ -1,15 +1,16 @@
 package com.yuiwai.gdxs.example
 
-import com.badlogic.gdx.{ApplicationListener, Gdx}
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.{Camera, Color, GL20, OrthographicCamera, Pixmap, Texture}
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
+import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.yuiwai.gdxs.{Area, FixedRegion, Pos, Size, component}
-import com.yuiwai.gdxs.component.Button
+import com.badlogic.gdx.{ApplicationListener, Gdx}
+import com.yuiwai.gdxs.component.{Button, Column, Label, Table}
 import com.yuiwai.gdxs.event.EventHandler
 import com.yuiwai.gdxs.renderer.Renderer
+import com.yuiwai.gdxs.style.{BitmapFontStyle, NoBackgroundStyle}
 import com.yuiwai.gdxs.view.ViewProfile
+import com.yuiwai.gdxs._
 
 object Example {
   def main(arg: Array[String]): Unit = {
@@ -28,14 +29,22 @@ class Adapter() extends ApplicationListener {
   private lazy val viewport = new FitViewport(600, 300, camera)
   private lazy val pixmap = new Pixmap(100, 100, Pixmap.Format.RGBA8888)
   private lazy val texture = new Texture(pixmap)
+  private lazy val fontStyle = new BitmapFontStyle with NoBackgroundStyle {
+    override val font: BitmapFont = new BitmapFont(Gdx.files.internal("font.fnt"))
+  }
   private lazy val viewProfile = new ViewProfile {
     override val camera: Camera = self.camera
-    override val components: Seq[component.Component] =
-      Button(texture, new FixedRegion(Area(Pos(0, 0), Size(50, 50))), ShowDialog) :: Nil
+    override val components: Seq[component.Component] = Seq(
+      Table(FixedRegion(Area(Pos(0, 0), Size(200, 80)))) {
+        _.appendRow(Column(Label("test1", fontStyle)), Column(Label("foo", fontStyle)))
+          .appendRow(Column(Label("test2", fontStyle)), Column(Label("bar", fontStyle)))
+      },
+      Button(texture, FixedRegion(Area(Pos(0, 0), Size(50, 50))), ShowDialog)
+    )
   }
   private lazy implicit val batch = new SpriteBatch()
   def actionHandler(action: Action): Unit = action match {
-    case _ => ()
+    case a => println(s"action: $a")
   }
   override def create(): Unit = {
     pixmap.setColor(Color.BLUE)
@@ -54,7 +63,6 @@ class Adapter() extends ApplicationListener {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     batch.begin()
     Renderer.render(viewProfile)
-    // batch.draw(texture, 0, 0, 100, 100)
     batch.end()
   }
   override def pause(): Unit = {}
