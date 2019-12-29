@@ -29,6 +29,12 @@ package object component {
     override def modRegion(f: Region => Region): Component = this
   }
 
+  // Spacer
+  trait Spacer extends ComponentCell
+  object Spacer {
+    def apply(spacerRegion: Region): Component = ComponentImpl(new Spacer {}, NoStyle, spacerRegion)
+  }
+
   // Label
   type LabelStyle = FontStyle with BackgroundStyle
   trait Label extends ComponentCell {
@@ -147,15 +153,6 @@ package object component {
       )
   }
 
-  // Container
-  sealed trait Container extends Component {
-    val children: Seq[Component]
-  }
-  /*
-  final case class AbsoluteContainer(children: Seq[Component], mapping: Map[Component, Vector2]) extends Container
-  final case class VerticalContainer(children: Seq[Component]) extends Container
-  */
-
   sealed trait Table extends ComponentCell {
     self =>
     val rows: Seq[Row]
@@ -194,5 +191,35 @@ package object component {
       new Column {
         override val child: Component = component
       }
+  }
+  sealed trait HLayout extends ComponentCell {
+    val children: Seq[Component]
+  }
+  object HLayout {
+    def apply(layoutRegion: Region, components: Seq[Component]): Component =
+      ComponentImpl(new HLayout {
+        override val children: Seq[Component] = {
+          val totalWidth = components.map(_.region.width).sum
+          val space = ((layoutRegion.width - totalWidth) / (components.length + 1)).max(0)
+          components.foldLeft[(List[Component], Float)](Nil -> space) { case ((acc, offset), c) =>
+            (c.modRegion(r => FixedRegion(r.area.modPos(_.copy(x = offset)))) :: acc, offset + space + c.region.width)
+          }._1.reverse
+        }
+      }, NoStyle, layoutRegion)
+  }
+  sealed trait VLayout extends ComponentCell {
+    val children: Seq[Component]
+  }
+  object VLayout {
+    def apply(layoutRegion: Region, components: Seq[Component]): Component =
+      ComponentImpl(new VLayout {
+        override val children: Seq[Component] = {
+          val totalHeight = components.map(_.region.height).sum
+          val space = ((layoutRegion.height - totalHeight) / (components.length + 1)).max(0)
+          components.foldLeft[(List[Component], Float)](Nil -> space) { case ((acc, offset), c) =>
+            (c.modRegion(r => FixedRegion(r.area.modPos(_.copy(y = offset)))) :: acc, offset + space + c.region.height)
+          }._1.reverse
+        }
+      }, NoStyle, layoutRegion)
   }
 }
