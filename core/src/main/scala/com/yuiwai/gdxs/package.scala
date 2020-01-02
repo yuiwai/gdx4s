@@ -26,9 +26,11 @@ package object gdxs {
       p.x >= pos.x && p.x <= pos.x + size.width && p.y >= pos.y && p.y <= pos.y + size.height
     def shiftY(dy: Float): Area = copy(pos = pos.shiftY(dy))
     def shiftX(dx: Float): Area = copy(pos = pos.shiftX(dx))
+    def modPos(f: Pos => Pos): Area = copy(pos = f(pos))
   }
   object Area {
     def zero: Area = apply(Pos.zero, Size.zero)
+    def apply(size: Size): Area = apply(Pos.zero, size)
   }
 
   sealed trait Region {
@@ -38,7 +40,12 @@ package object gdxs {
     def width: Float = area.size.width
     def height: Float = area.size.height
   }
-  final case class FixedRegion(area: Area) extends Region
+  final case class FixedRegion(area: Area) extends Region {
+    def modPos(f: Pos => Pos): FixedRegion = copy(area.modPos(f))
+  }
+  object FixedRegion {
+    def apply(size: Size): FixedRegion = FixedRegion(Area(size))
+  }
   final case class RelativeRegion(pos: Pos) extends Region {
     override val area: Area = Area(pos, Size(0, 0))
   }

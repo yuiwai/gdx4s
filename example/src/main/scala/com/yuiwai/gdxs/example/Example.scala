@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.{ApplicationListener, Gdx}
-import com.yuiwai.gdxs.component.{Button, Column, Label, Table}
+import com.yuiwai.gdxs.component.{Button, Column, Label, Table, VLayout}
 import com.yuiwai.gdxs.event.EventHandler
 import com.yuiwai.gdxs.renderer.Renderer
 import com.yuiwai.gdxs.style.{BitmapFontStyle, NoBackgroundStyle}
@@ -39,7 +39,11 @@ class Adapter() extends ApplicationListener {
         _.appendRow(Column(Label("test1", fontStyle)), Column(Label("foo", fontStyle)))
           .appendRow(Column(Label("test2", fontStyle)), Column(Label("bar", fontStyle)))
       },
-      Button(texture, FixedRegion(Area(Pos(0, 0), Size(50, 50))), ShowDialog)
+      Button(texture, FixedRegion(Area(Pos(0, 0), Size(50, 50))), ShowDialog),
+      VLayout(
+        FixedRegion(Area(Pos(-100, -50), Size(100, 100))),
+        Seq.fill(4)(Button(texture, FixedRegion(Size(20, 20)), ShowDialog))
+      )
     )
   }
   private lazy implicit val batch = new SpriteBatch()
