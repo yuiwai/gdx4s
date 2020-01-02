@@ -16,7 +16,7 @@ trait EventHandler[A] extends InputProcessor {
   lazy val buttons: Seq[(Button[A], Region)] = findButtons(viewProfile.components)
   private def findButtons(components: Seq[Component]): Seq[(Button[A], Region)] =
     components
-      .map(c =>  c -> c.cell)
+      .map(c => c -> c.cell)
       .flatMap {
         case (c, b: Button[A]) => Seq(b -> c.region)
         case (_, l: Layout) => findButtons(l.children)
@@ -41,3 +41,23 @@ trait EventHandler[A] extends InputProcessor {
   override def mouseMoved(screenX: Int, screenY: Int): Boolean = false
   override def scrolled(amount: Int): Boolean = false
 }
+
+trait DragSupport[A, D] extends EventHandler[A] {
+  protected var inputState = DraggingState(NoMode)
+  private def modState(f: DraggingState => DraggingState): Unit = inputState = f(inputState)
+  protected def startMove(d: D): Unit = modState(_.copy(MoveMode[D](d)))
+  protected def startDrop(): Unit = modState(_.copy(DropMode))
+  protected def stopDrag(): Unit = modState(_.copy(NoMode))
+  override def touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
+    stopDrag()
+    true
+  }
+  override def touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean = true
+}
+
+final case class DraggingState(dragMode: DragMode)
+
+sealed trait DragMode
+case object NoMode extends DragMode
+final case class MoveMode[D](dragging: D) extends DragMode
+case object DropMode extends DragMode
