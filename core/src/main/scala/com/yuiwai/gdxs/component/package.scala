@@ -192,7 +192,10 @@ package object component {
         override val child: Component = component
       }
   }
-  sealed trait HLayout extends ComponentCell {
+  sealed trait Layout extends ComponentCell {
+    val children: Seq[Component]
+  }
+  sealed trait HLayout extends Layout {
     val children: Seq[Component]
   }
   object HLayout {
@@ -202,12 +205,12 @@ package object component {
           val totalWidth = components.map(_.region.width).sum
           val space = ((layoutRegion.width - totalWidth) / (components.length + 1)).max(0)
           components.foldLeft[(List[Component], Float)](Nil -> space) { case ((acc, offset), c) =>
-            (c.modRegion(r => FixedRegion(r.area.modPos(_.copy(x = offset)))) :: acc, offset + space + c.region.width)
+            (c.modRegion(r => FixedRegion(r.area.modPos(_.copy(x = offset + layoutRegion.x, y = layoutRegion.y)))) :: acc, offset + space + c.region.width)
           }._1.reverse
         }
       }, NoStyle, layoutRegion)
   }
-  sealed trait VLayout extends ComponentCell {
+  sealed trait VLayout extends Layout {
     val children: Seq[Component]
   }
   object VLayout {
@@ -217,7 +220,7 @@ package object component {
           val totalHeight = components.map(_.region.height).sum
           val space = ((layoutRegion.height - totalHeight) / (components.length + 1)).max(0)
           components.foldLeft[(List[Component], Float)](Nil -> space) { case ((acc, offset), c) =>
-            (c.modRegion(r => FixedRegion(r.area.modPos(_.copy(y = offset)))) :: acc, offset + space + c.region.height)
+            (c.modRegion(r => FixedRegion(r.area.modPos(_.copy(x = layoutRegion.x, y = offset + layoutRegion.y)))) :: acc, offset + space + c.region.height)
           }._1.reverse
         }
       }, NoStyle, layoutRegion)

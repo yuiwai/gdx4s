@@ -2,7 +2,7 @@ package com.yuiwai.gdxs
 
 import com.badlogic.gdx.graphics.g2d.{GlyphLayout, SpriteBatch}
 import com.yuiwai.gdxs.component.{Button, ButtonStyle, Clip, Column, Label, LabelStyle, Row, Table, Tiled}
-import com.yuiwai.gdxs.style.{NoStyle, Style}
+import com.yuiwai.gdxs.style.NoStyle
 
 package object renderer {
   implicit val labelRenderer: Renderer[Label, LabelStyle] = new Renderer[Label, LabelStyle] {

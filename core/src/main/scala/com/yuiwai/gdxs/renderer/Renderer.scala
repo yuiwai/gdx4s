@@ -2,7 +2,7 @@ package com.yuiwai.gdxs.renderer
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.yuiwai.gdxs.Region
-import com.yuiwai.gdxs.component.{Button, Clip, Component, ComponentCell, EmptyCell, EmptyComponent, Label, Table, Tiled}
+import com.yuiwai.gdxs.component.{Button, Clip, Component, ComponentCell, EmptyCell, HLayout, Label, Table, Tiled, VLayout}
 import com.yuiwai.gdxs.style.{BackgroundStyle, FitTextureBackgroundStyle, NoBackgroundStyle, Style}
 import com.yuiwai.gdxs.view.ViewProfile
 
@@ -19,6 +19,8 @@ object Renderer {
           case clip: Clip => render(clip, c)
           case tiled: Tiled => render(tiled, c)
           case table: Table => render(table, c)
+          case vLayout: VLayout => render(vLayout.children)
+          case hLayout: HLayout => render(hLayout.children)
           case EmptyCell =>
         }
       }
