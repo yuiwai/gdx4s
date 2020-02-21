@@ -2,7 +2,7 @@ package com.yuiwai.gdxs.event
 
 import com.badlogic.gdx.InputProcessor
 import com.yuiwai.gdxs.{Pos, Region}
-import com.yuiwai.gdxs.component.Button
+import com.yuiwai.gdxs.component.{Button, Component, Layout}
 import com.yuiwai.gdxs.view.ViewProfile
 
 trait EventHandler[A] extends InputProcessor {
@@ -13,13 +13,15 @@ trait EventHandler[A] extends InputProcessor {
       .camera
       .unproject(pos.toVector3)
   }
-  lazy val buttons: Seq[(Button[A], Region)] =
-    viewProfile.components.filter {
-      _.cell.isInstanceOf[Button[A]]
-    }
-      .map { c => c.cell.asInstanceOf[Button[A]] -> c.region }
-
-  // FIXME 暫定ボタン実装
+  lazy val buttons: Seq[(Button[A], Region)] = findButtons(viewProfile.components)
+  private def findButtons(components: Seq[Component]): Seq[(Button[A], Region)] =
+    components
+      .map(c => c -> c.cell)
+      .flatMap {
+        case (c, b: Button[A]) => Seq(b -> c.region)
+        case (_, l: Layout) => findButtons(l.children)
+        case _ => Seq.empty
+      }
   override def touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
     val pos = screenToLocal(Pos(screenX, screenY))
     buttons.find(_._2.area.hitTest(pos)) match {
@@ -39,3 +41,23 @@ trait EventHandler[A] extends InputProcessor {
   override def mouseMoved(screenX: Int, screenY: Int): Boolean = false
   override def scrolled(amount: Int): Boolean = false
 }
+
+trait DragSupport[A, D] extends EventHandler[A] {
+  protected var inputState = DraggingState(NoMode)
+  private def modState(f: DraggingState => DraggingState): Unit = inputState = f(inputState)
+  protected def startMove(d: D): Unit = modState(_.copy(MoveMode[D](d)))
+  protected def startDrop(): Unit = modState(_.copy(DropMode))
+  protected def stopDrag(): Unit = modState(_.copy(NoMode))
+  override def touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
+    stopDrag()
+    true
+  }
+  override def touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean = true
+}
+
+final case class DraggingState(dragMode: DragMode)
+
+sealed trait DragMode
+case object NoMode extends DragMode
+final case class MoveMode[D](dragging: D) extends DragMode
+case object DropMode extends DragMode
